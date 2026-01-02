@@ -1,0 +1,7 @@
+{
+  "name": "Man's Space - Barber Street",
+  "description": "A premium barbershop management and booking experience with integrated AI style assistant.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
