@@ -2,7 +2,8 @@
 import { GoogleGenAI } from "@google/genai";
 
 // Always use process.env.API_KEY directly as per SDK requirements
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+// Alterado para funcionar no Vite/Navegador
+const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY });
 
 export const getStyleAssistantResponse = async (userMessage: string) => {
   try {
