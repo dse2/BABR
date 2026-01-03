@@ -1,23 +1,25 @@
+/* IMPORTANTE: Estamos usando a biblioteca correta para web agora */
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
-import { GoogleGenAI } from "@google/genai";
-
-// Always use process.env.API_KEY directly as per SDK requirements
-// Alterado para funcionar no Vite/Navegador
-const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY });
+/* AQUI O SEGREDO: Usamos import.meta.env para pegar a chave do Vite */
+const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
 
 export const getStyleAssistantResponse = async (userMessage: string) => {
   try {
-    const response = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
-      contents: userMessage,
-      config: {
-        systemInstruction: "Você é o assistente virtual da Man's Space - Barber Street. Seja educado, use um tom profissional e moderno (estilo barbearia premium). Ajude os clientes a escolherem cortes (degradê, social, freestyle) e barbas baseando-se no que eles descrevem. Se perguntarem sobre preços ou horários, cite que temos Corte por R$40 e Barba por R$40. Localização: Vale do Jatobá, BH.",
-      },
-    });
-    // Accessing the .text property directly as per the latest SDK guidelines
-    return response.text;
+    /* Usando um modelo que funciona rápido e é gratuito para testes */
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+    const prompt = `
+      System Instruction: Você é o assistente virtual da Man's Space - Barber Street. Seja educado, use um tom profissional e moderno. Ajude com cortes e barbas. Preços: Corte R$40, Barba R$40. Local: Vale do Jatobá, BH.
+      User Message: ${userMessage}
+    `;
+
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    return response.text();
+    
   } catch (error) {
-    console.error("Gemini API Error:", error);
-    return "Desculpe, tive um pequeno problema técnico. Como posso ajudar com seu agendamento hoje?";
+    console.error("Erro na IA:", error);
+    return "Erro técnico. Tente novamente mais tarde.";
   }
 };
